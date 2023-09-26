@@ -9,7 +9,7 @@ import ManageAcount from "@/src/components/manage-account";
 const Browse = () => {
   const { loggedInAccount } = useContext(GlobalContext);
   const { data: session } = useSession();
-  // console.log(session);
+  console.log(session);
   if (!session) return <UnAuthPage />;
 
   if (loggedInAccount === null) return <ManageAcount />;

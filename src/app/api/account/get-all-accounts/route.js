@@ -10,6 +10,7 @@ export async function GET(req) {
 
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
+
     const getAllAccounts = await Account.find({ uid: id });
 
     if (getAllAccounts) {
@@ -20,14 +21,14 @@ export async function GET(req) {
     } else {
       return NextResponse.json({
         success: false,
-        message: "Something went wrong a",
+        message: "Something Went wrong",
       });
     }
-  } catch (error) {
-    console.log(error);
+  } catch (e) {
+    console.log(e);
     return NextResponse.json({
       success: false,
-      message: "Something went wrong",
+      message: "Something Went wrong",
     });
   }
 }

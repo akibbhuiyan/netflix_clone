@@ -1,14 +1,15 @@
 import mongoose from "mongoose";
 
-const newAccountSchema = new mongoose.Schema(
+const NewAccountSchema = new mongoose.Schema(
   {
     uid: String,
     name: String,
     pin: String,
   },
-  { timesStamps: true }
+  { timestamps: true }
 );
 
 const Account =
-  mongoose.model.Account || mongoose.model("Account", newAccountSchema);
+  mongoose.models.Account || mongoose.model("Account", NewAccountSchema);
+
 export default Account;

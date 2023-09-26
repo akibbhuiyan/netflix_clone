@@ -8,12 +8,12 @@ export const dynamic = "force-dynamic";
 export async function POST(req) {
   try {
     await connectToDB();
-    const { uid, name, pin } = await req.body.json();
+    const { uid, name, pin } = await req.json();
 
     const isAccountAlreadyExist = await Account.find({ uid, name });
     const allAccount = await Account.find({});
 
-    if (isAccountAlreadyExist) {
+    if (isAccountAlreadyExist && isAccountAlreadyExist.length > 0) {
       return NextResponse.json({
         success: false,
         message: "Account already exist",
