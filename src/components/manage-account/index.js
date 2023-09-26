@@ -82,6 +82,7 @@ export default function ManageAcount() {
   };
 
   const handlePinSubmit = async (value, index) => {
+    setPageLoader(true);
     const res = await fetch(`/api/account/login-to-account`, {
       method: "POST",
       headers: {

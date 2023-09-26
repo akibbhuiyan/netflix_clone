@@ -33,6 +33,7 @@ const AccountForm = ({
                 setFormData({ ...formData, [e.target.name]: e.target.value })
               }
               placeholder="Enter Your Pin"
+              maxLength={4}
               className="px-5 py-3 rounded-lg placeholder:text-red-700 text-lg text-[#e5b109] focus:outline-none outline"
             />
             <button
