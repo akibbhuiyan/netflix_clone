@@ -31,6 +31,7 @@ export default function ManageAcount() {
 
   const pathName = usePathname();
   const router = useRouter();
+
   async function getAllAccounts() {
     const res = await fetch(
       `/api/account/get-all-accounts?id=${session?.user?.uid}`,
