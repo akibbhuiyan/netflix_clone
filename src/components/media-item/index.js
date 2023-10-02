@@ -7,9 +7,46 @@ import {
   ChevronDownIcon,
   CheckIcon,
 } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { GlobalContext } from "@/src/context";
+import { useSession } from "next-auth/react";
 const baseUrl = "https://image.tmdb.org/t/p/w500";
 
-const MediaItem = ({ title, media }) => {
+const MediaItem = ({ media, searchView = false, similarMovieView = false }) => {
+  const {
+    currentMediaInfoIdandType,
+    setCurrentMediaInfoIdandType,
+    showDetailsPopup,
+    setShowDetailsPopup,
+    loggedInAccount,
+  } = useContext(GlobalContext);
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  const handleAddFavorites = async (item) => {
+    const { backdrop_path, poster_path, id, type } = item;
+
+    const res = await fetch("/api/favorites/add-favorite", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        backdrop_path,
+        poster_path,
+        movieId: id,
+        type,
+        uid: session.user?.uid,
+        accountId: loggedInAccount?._id,
+      }),
+    });
+
+    const data = await res.json();
+    console.log(data, "favorite");
+  };
+  const handleRemoveFavorites = async (item) => {};
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.5 }}
@@ -26,10 +63,17 @@ const MediaItem = ({ title, media }) => {
           alt="Media"
           layout="fill"
           size="width"
-          className="rounded sm object-cover md:rounded hover:rounded-sm "
+          className="rounded-sm object-cover md:rounded hover:rounded-sm"
+          onClick={() => router.push(`/watch/${media.type}/${media.id}`)}
         />
+
         <div className="space-x-3 hidden absolute p-2 bottom-0 buttonWrapper">
           <button
+            onClick={
+              media?.addedToFavorite
+                ? () => handleRemoveFavorites(media)
+                : () => handleAddFavorites(media)
+            }
             className={`cursor-pointer border flex p-2 items-center gap-x-2 rounded-full  text-sm font-semibold transition hover:opacity-90 border-white   bg-black opacity-75 text-black`}
           >
             {media?.addedToFavorite ? (
@@ -38,7 +82,16 @@ const MediaItem = ({ title, media }) => {
               <PlusIcon color="#ffffff" className="h-7 w-7" />
             )}
           </button>
-          <button className="cursor-pointer p-2 border flex items-center gap-x-2 rounded-full  text-sm font-semibold transition hover:opacity-90  border-white  bg-black opacity-75 ">
+          <button
+            onClick={() => {
+              setShowDetailsPopup(true);
+              setCurrentMediaInfoIdandType({
+                type: media?.type,
+                id: media?.id,
+              });
+            }}
+            className="cursor-pointer p-2 border flex items-center gap-x-2 rounded-full  text-sm font-semibold transition hover:opacity-90  border-white  bg-black opacity-75 "
+          >
             <ChevronDownIcon color="#ffffff" className="h-7 w-7" />
           </button>
         </div>

@@ -20,8 +20,8 @@ const MediaRow = ({ title, medias }) => {
               .map((mediaItem) => (
                 <MediaItem
                   title={title}
-                  key={mediaItem.key}
                   media={mediaItem}
+                  key={mediaItem.key}
                 />
               ))}
         </div>

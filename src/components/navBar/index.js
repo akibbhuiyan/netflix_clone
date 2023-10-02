@@ -7,6 +7,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { GlobalContext } from "@/src/context";
 import AccountPopup from "./accoun-popup";
 import CircleLoader from "../circle-loader";
+import DetailsPopup from "../details-popup";
 
 const NavBar = () => {
   const { data: session } = useSession();
@@ -23,6 +24,8 @@ const NavBar = () => {
     setLoggedInAccount,
     setAccount,
     account,
+    showDetailsPopup,
+    setShowDetailsPopup,
   } = useContext(GlobalContext);
 
   const router = useRouter();
@@ -32,7 +35,11 @@ const NavBar = () => {
     { id: "home", title: "Home", path: "/browse" },
     { id: "tv", title: "Tv", path: "/tv" },
     { id: "movies", title: "Movies", path: "/movies" },
-    { id: "my-list", title: "My List", path: "/mylist" },
+    {
+      id: "my-list",
+      title: "My List",
+      path: `/my-list/${session?.user?.uid}/${loggedInAccount._id}`,
+    },
   ];
   useEffect(() => {
     const handleScroll = () => {
@@ -93,7 +100,7 @@ const NavBar = () => {
                   setPageLoader(true);
                   router.push(item.path);
                   setSearchQuery("");
-                  setShowSearchBar(false)
+                  setShowSearchBar(false);
                 }}
               >
                 {item.title}
@@ -130,6 +137,7 @@ const NavBar = () => {
           </div>
         </div>
       </header>
+      <DetailsPopup show={showDetailsPopup} setShow={setShowDetailsPopup} />
       {showAccountPopup && (
         <AccountPopup
           setPageLoader={setPageLoader}
