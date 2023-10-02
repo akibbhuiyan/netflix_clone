@@ -6,6 +6,7 @@ import Search from "./search";
 import { AiOutlineSearch } from "react-icons/ai";
 import { GlobalContext } from "@/src/context";
 import AccountPopup from "./accoun-popup";
+import CircleLoader from "../circle-loader";
 
 const NavBar = () => {
   const { data: session } = useSession();
@@ -16,6 +17,7 @@ const NavBar = () => {
   const [showAccountPopup, setShowAccountPopup] = useState(false);
 
   const {
+    PageLoader,
     setPageLoader,
     loggedInAccount,
     setLoggedInAccount,
@@ -45,7 +47,6 @@ const NavBar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  
   async function getAllAccounts() {
     const res = await fetch(
       `/api/account/get-all-accounts?id=${session?.user?.uid}`,
@@ -63,10 +64,11 @@ const NavBar = () => {
     }
   }
 
-
   useEffect(() => {
     getAllAccounts();
   }, []);
+
+  if (PageLoader) return <CircleLoader />;
 
   return (
     <div className="relative ">
@@ -87,6 +89,12 @@ const NavBar = () => {
               <li
                 key={item.id}
                 className="cursor-pointer text-[16px] font-light text-[#e5e5e5] transition duration-[.4s] hover:text-[#b3b3b3]"
+                onClick={() => {
+                  setPageLoader(true);
+                  router.push(item.path);
+                  setSearchQuery("");
+                  setShowSearchBar(false)
+                }}
               >
                 {item.title}
               </li>
@@ -111,7 +119,7 @@ const NavBar = () => {
           )}
           <div
             className="flex gap-2 items-center cursor-pointer"
-            onClick={() => setShowAccountPopup(true)}
+            onClick={() => setShowAccountPopup(!showAccountPopup)}
           >
             <img
               src="https://occ-0-2611-3663.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABfNXUMVXGhnCZwPI1SghnGpmUgqS_J-owMff-jig42xPF7vozQS1ge5xTgPTzH7ttfNYQXnsYs4vrMBaadh4E6RTJMVepojWqOXx.png?r=1d4"
@@ -129,7 +137,7 @@ const NavBar = () => {
           setLoggedInAccount={setLoggedInAccount}
           setAccount={setAccount}
           account={account}
-          signOut ={signOut}
+          signOut={signOut}
         />
       )}
     </div>
