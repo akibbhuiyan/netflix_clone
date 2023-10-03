@@ -46,7 +46,6 @@ export default function ManageAcount() {
       }
     );
     const data = await res.json();
-    console.log(data);
     if (data && data.data && data.data.length) {
       setAccount(data.data);
       setPageLoader(false);
@@ -67,7 +66,6 @@ export default function ManageAcount() {
       body: JSON.stringify({ ...formData, uid: session?.user?.uid }),
     });
     const data = await res.json();
-    console.log(data, "data");
     if (data.success) {
       getAllAccounts();
       setFormData(initialFormData);
@@ -102,7 +100,6 @@ export default function ManageAcount() {
       }),
     });
     const data = await res.json();
-    console.log(data);
     if (data.success) {
       setLoggedInAccount(showPinContainer.account);
       sessionStorage.setItem(
