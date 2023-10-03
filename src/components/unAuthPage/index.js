@@ -101,7 +101,7 @@ const UnAuthPage = () => {
                   <div
                     onClick={() =>
                       setShowCurrentAnswer(
-                        showCurrentAnswer === null ? null : idx
+                        showCurrentAnswer === null ? idx : null
                       )
                     }
                     className="flex justify-between p-3 lg:p-5 mt-2 bg-[#303030] cursor-pointer"
