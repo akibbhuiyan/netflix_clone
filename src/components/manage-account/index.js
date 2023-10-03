@@ -109,9 +109,12 @@ export default function ManageAcount() {
         "loggedInAccount",
         JSON.stringify(showPinContainer.account)
       );
-      if (pathName.includes("my-list")) router.push(`/my-list/${session?.user?.uid}/${showPinContainer.account?._id}`);
-     else router.push(pathName);
-     
+      if (pathName.includes("my-list"))
+        router.push(
+          `/my-list/${session?.user?.uid}/${showPinContainer.account?._id}`
+        );
+      else router.push(pathName);
+
       setPageLoader(false);
       setPin("");
     } else {
