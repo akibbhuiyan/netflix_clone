@@ -18,7 +18,6 @@ export default function GlobalState({ children }) {
   const [similarMedia, setSimilarMedia] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const { data: session } = useSession();
-
   useEffect(() => {
     setLoggedInAccount(JSON.parse(sessionStorage.getItem("loggedInAccount")));
   }, []);
@@ -43,7 +42,9 @@ export default function GlobalState({ children }) {
         mediaDetails,
         setMediaDetails,
         similarMedia,
-        setSimilarMedia,favorites, setFavorites
+        setSimilarMedia,
+        favorites,
+        setFavorites,
       }}
     >
       {children}

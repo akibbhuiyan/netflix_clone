@@ -1,13 +1,17 @@
 "use client";
 
+import { GlobalContext } from "@/src/context";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useContext } from "react";
 import { AiFillPlayCircle } from "react-icons/ai";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 
 const baseUrl = "https://image.tmdb.org/t/p/original";
 
 const Banner = ({ medias }) => {
+  const { setCurrentMediaInfoIdandType, setShowDetailsPopup } =
+    useContext(GlobalContext);
   const router = useRouter();
   const createRandomMedia =
     medias && medias?.length
@@ -47,7 +51,16 @@ const Banner = ({ medias }) => {
           <AiFillPlayCircle className="w-4 h-4 text-black md:h-7 md:w-7 cursor-pointer" />
           Play
         </button>
-        <button className="cursor-pointer flex items-center gap-x-2 rounded px-5 py-1.5 text-sm font-semibold transition hover:opacity-75 md:py-2.5 md:px-8 md:text-xl bg-[gray]/70">
+        <button
+          onClick={() => {
+            setShowDetailsPopup(true);
+            setCurrentMediaInfoIdandType({
+              type: createRandomMedia?.type,
+              id: createRandomMedia?.id,
+            });
+          }}
+          className="cursor-pointer flex items-center gap-x-2 rounded px-5 py-1.5 text-sm font-semibold transition hover:opacity-75 md:py-2.5 md:px-8 md:text-xl bg-[gray]/70"
+        >
           <IoMdInformationCircleOutline className="w-5 h-5  md:h-8 md:w-8 cursor-pointer" />
           More Info
         </button>
