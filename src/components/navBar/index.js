@@ -62,7 +62,6 @@ const NavBar = () => {
       }
     );
     const data = await res.json();
-    console.log(data);
     if (data && data.data && data.data.length) {
       setAccount(data.data);
       setPageLoader(false);

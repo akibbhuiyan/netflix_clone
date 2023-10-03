@@ -27,7 +27,6 @@ const MyList = () => {
         loggedInAccount?._id
       );
 
-      console.log(data);
       if (data) {
         setFavorites(data.map((item) => ({ ...item, addedToFavorite: true })));
         setPageLoader(false);

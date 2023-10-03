@@ -96,7 +96,6 @@ const Browse = () => {
     getMediaData();
   }, []);
 
-  console.log(mediaData);
   if (!session) return <UnAuthPage />;
   if (loggedInAccount === null) return <ManageAcount />;
   if (pageLoader) return <CircleLoader />;

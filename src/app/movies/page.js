@@ -18,7 +18,6 @@ const Movies = () => {
     setPageLoader,
   } = useContext(GlobalContext);
   const { data: session } = useSession();
-  console.log(mediaData);
   useEffect(() => {
     const getAllMedias = async () => {
       const action = await getTvorMoviesByGenre("movie", 28);

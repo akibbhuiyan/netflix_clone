@@ -104,8 +104,6 @@ const MediaItem = ({
       };
       setMediaData(updatedMedia);
     }
-
-    console.log(data, "favorite");
   };
   const handleRemoveFavorites = async (item) => {
     const res = await fetch(`/api/favorites/remove-favorite?id=${item._id}`, {

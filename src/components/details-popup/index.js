@@ -46,7 +46,6 @@ const DetailsPopup = ({ show, setShow }) => {
           currentMediaInfoIdandType.type,
           currentMediaInfoIdandType.id
         );
-        console.log(currentMediaInfoIdandType);
         const findIndexOfTrailer =
           extractedMediaDetails &&
           extractedMediaDetails.videos &&
