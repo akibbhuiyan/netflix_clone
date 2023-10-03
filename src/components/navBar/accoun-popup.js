@@ -13,7 +13,7 @@ const AccountPopup = ({
       <div className="flex flex-col gap-3 ">
         {account && account.length
           ? account
-              .filter((item) => item._id !== loggedInAccount._id)
+              .filter((item) => item._id !== loggedInAccount?._id)
               .map((filterAccount) => (
                 <div
                   className="cursor-pointer flex gap-5 "

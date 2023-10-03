@@ -120,16 +120,16 @@ export const getSimilarTvorMovie = async (type, id) => {
     console.log(error);
   }
 };
+
 export const getAllFavorites = async (uid, accountId) => {
   try {
-    const res = await fetch(
-      `/api/favorites/get-all-favorites?id=${uid}&accountId=${accoundId}`,
+    const res = await fetch(`/api/favorites/get-all-favorites?id=${uid}&accountId=${accountId}`,
       {
         method: "GET",
       }
     );
     const data = await res.json();
-    return data
+    return data && data.data;
   } catch (error) {
     console.log(error);
   }

@@ -7,22 +7,43 @@ import {
   ChevronDownIcon,
   CheckIcon,
 } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useContext } from "react";
 import { GlobalContext } from "@/src/context";
 import { useSession } from "next-auth/react";
+import { getAllFavorites } from "@/src/utils";
 const baseUrl = "https://image.tmdb.org/t/p/w500";
 
-const MediaItem = ({ media, searchView = false, similarMovieView = false }) => {
+const MediaItem = ({
+  media,
+  searchView = false,
+  similarMovieView = false,
+  listView = false,
+  title,
+}) => {
   const {
     currentMediaInfoIdandType,
     setCurrentMediaInfoIdandType,
     showDetailsPopup,
     setShowDetailsPopup,
     loggedInAccount,
+    setFavorites,
+    similarMedia,
+    searchResult,
+    setSearchResult,
+    setSimilarMedia,
+    mediaData,
+    setMediaData,
   } = useContext(GlobalContext);
+  const pathName = usePathname();
   const router = useRouter();
   const { data: session } = useSession();
+  const updateFavorite = async () => {
+    const res = await getAllFavorites(session?.user?.uid, loggedInAccount?._id);
+    if (res) {
+      setFavorites(res.map((item) => ({ ...item, addedToFavorite: true })));
+    }
+  };
 
   const handleAddFavorites = async (item) => {
     const { backdrop_path, poster_path, id, type } = item;
@@ -43,9 +64,59 @@ const MediaItem = ({ media, searchView = false, similarMovieView = false }) => {
     });
 
     const data = await res.json();
+    if (data && data.success) {
+      if (pathName.includes("my-list")) {
+        updateFavorite();
+      }
+    }
+    if (searchView) {
+      let updatedSearchResult = [...searchResult];
+      const indexOfCurrentAddedMedia = updatedSearchResult.findIndex(
+        (item) => item.id === id
+      );
+      updatedSearchResult[indexOfCurrentAddedMedia] = {
+        ...updatedSearchResult[indexOfCurrentAddedMedia],
+        addedToFavorite: true,
+      };
+      setSearchResult(updatedSearchResult);
+    } else if (similarMovieView) {
+      let updatedSimilarMovies = [...similarMedia];
+      const indexOfCurrentAddedMedia = updatedSimilarMovies.findIndex(
+        (item) => item.id === id
+      );
+      updatedSimilarMovies[indexOfCurrentAddedMedia] = {
+        ...updatedSimilarMovies[indexOfCurrentAddedMedia],
+        addedToFavorite: true,
+      };
+      setSimilarMedia(updatedSimilarMovies);
+    } else {
+      let updatedMedia = [...mediaData];
+      const indexOfRowItem = updatedMedia.findIndex(
+        (item) => item.title === title
+      );
+      let currentMediaArrayFromRow = updatedMedia[indexOfRowItem].medias;
+      const indexOfCurrentMeadia = currentMediaArrayFromRow.findIndex(
+        (item) => item.id === id
+      );
+      currentMediaArrayFromRow[indexOfCurrentMeadia] = {
+        ...currentMediaArrayFromRow[indexOfCurrentMeadia],
+        addedToFavorite: true,
+      };
+      setMediaData(updatedMedia);
+    }
+
     console.log(data, "favorite");
   };
-  const handleRemoveFavorites = async (item) => {};
+  const handleRemoveFavorites = async (item) => {
+    const res = await fetch(`/api/favorites/remove-favorite?id=${item._id}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+
+    if (data && data.success) {
+      updateFavorite();
+    }
+  };
 
   return (
     <motion.div
@@ -64,17 +135,25 @@ const MediaItem = ({ media, searchView = false, similarMovieView = false }) => {
           layout="fill"
           size="width"
           className="rounded-sm object-cover md:rounded hover:rounded-sm"
-          onClick={() => router.push(`/watch/${media.type}/${media.id}`)}
+          onClick={() =>
+            router.push(
+              `/watch/${media.type}/${listView ? media.movieId : media.id}`
+            )
+          }
         />
 
         <div className="space-x-3 hidden absolute p-2 bottom-0 buttonWrapper">
           <button
             onClick={
               media?.addedToFavorite
-                ? () => handleRemoveFavorites(media)
+                ? listView
+                  ? () => handleRemoveFavorites(media)
+                  : null
                 : () => handleAddFavorites(media)
             }
-            className={`cursor-pointer border flex p-2 items-center gap-x-2 rounded-full  text-sm font-semibold transition hover:opacity-90 border-white   bg-black opacity-75 text-black`}
+            className={`${
+              media?.addedToFavorite && !listView && "cursor-not-allowed"
+            }cursor-pointer border flex p-2 items-center gap-x-2 rounded-full  text-sm font-semibold transition hover:opacity-90 border-white   bg-black opacity-75 text-black`}
           >
             {media?.addedToFavorite ? (
               <CheckIcon color="#ffffff" className="h-7 w-7" />
@@ -87,7 +166,7 @@ const MediaItem = ({ media, searchView = false, similarMovieView = false }) => {
               setShowDetailsPopup(true);
               setCurrentMediaInfoIdandType({
                 type: media?.type,
-                id: media?.id,
+                id: listView ? media.movieId : media?.id,
               });
             }}
             className="cursor-pointer p-2 border flex items-center gap-x-2 rounded-full  text-sm font-semibold transition hover:opacity-90  border-white  bg-black opacity-75 "

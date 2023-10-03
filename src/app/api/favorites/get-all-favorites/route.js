@@ -14,7 +14,7 @@ export async function GET(req) {
 
     const getAllFavorites = await Favorites.find({ uid: id, accountId });
 
-    if (getAllAccounts) {
+    if (getAllFavorites) {
       return NextResponse.json({
         success: true,
         data: getAllFavorites,
@@ -29,7 +29,7 @@ export async function GET(req) {
     console.log(e);
     return NextResponse.json({
       success: false,
-      message: "Something Went wrong",
+      message: "Something Went wrong 2",
     });
   }
 }

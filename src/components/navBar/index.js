@@ -38,7 +38,7 @@ const NavBar = () => {
     {
       id: "my-list",
       title: "My List",
-      path: `/my-list/${session?.user?.uid}/${loggedInAccount._id}`,
+      path: `/my-list/${session?.user?.uid}/${loggedInAccount?._id}`,
     },
   ];
   useEffect(() => {

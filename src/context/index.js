@@ -16,7 +16,7 @@ export default function GlobalState({ children }) {
   const [showDetailsPopup, setShowDetailsPopup] = useState(false);
   const [mediaDetails, setMediaDetails] = useState(null);
   const [similarMedia, setSimilarMedia] = useState([]);
-
+  const [favorites, setFavorites] = useState([]);
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function GlobalState({ children }) {
         mediaDetails,
         setMediaDetails,
         similarMedia,
-        setSimilarMedia,
+        setSimilarMedia,favorites, setFavorites
       }}
     >
       {children}

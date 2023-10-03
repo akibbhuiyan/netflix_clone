@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { GlobalContext } from "@/src/context";
 import ManageAcount from "@/src/components/manage-account";
 import CommonLayout from "@/src/components/commonLayout";
-import { getTvorMoviesByGenre } from "@/src/utils";
+import { getTvorMoviesByGenre,getAllFavorites } from "@/src/utils";
 import CircleLoader from "@/src/components/circle-loader";
 
 const Tv = () => {
@@ -31,6 +31,10 @@ const Tv = () => {
       const war = await getTvorMoviesByGenre("tv", 10768);
       const western = await getTvorMoviesByGenre("tv", 37);
       const dramaMovies = await getTvorMoviesByGenre("tv", 18);
+      const allFavorites = await getAllFavorites(
+        session?.user?.uid,
+        loggedInAccount?._id
+      );
 
       setMediaData(
         [
@@ -79,7 +83,12 @@ const Tv = () => {
           medias: item.medias.map((mediaItem) => ({
             ...mediaItem,
             type: "tv",
-            addedToFavorite: false,
+        
+            addedToFavorite:
+            allFavorites && allFavorites.length
+              ? allFavorites.map((fav) => fav.movieId).indexOf(mediaItem.id) >
+                -1
+              : false,
           })),
         }))
       );

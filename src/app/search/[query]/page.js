@@ -6,7 +6,7 @@ import UnAuthPage from "../../../components/unAuthPage";
 import { GlobalContext } from "@/src/context";
 import ManageAcount from "@/src/components/manage-account";
 import { useParams } from "next/navigation";
-import { getTvorMovieSearchResults } from "@/src/utils";
+import { getAllFavorites, getTvorMovieSearchResults } from "@/src/utils";
 import CircleLoader from "@/src/components/circle-loader";
 import { motion } from "framer-motion";
 import NavBar from "@/src/components/navBar";
@@ -28,7 +28,10 @@ const Search = () => {
     const getSearchResults = async () => {
       const tvShows = await getTvorMovieSearchResults("tv", params.query);
       const movies = await getTvorMovieSearchResults("movie", params.query);
-
+      const allFavorites = await getAllFavorites(
+        session?.user?.uid,
+        loggedInAccount?._id
+      );
       setSearchResult([
         ...tvShows
           .filter(
@@ -37,7 +40,12 @@ const Search = () => {
           .map((tvshowItem) => ({
             ...tvshowItem,
             type: "tv",
-            addedToFavorites: false,
+            addedToFavorite:
+              allFavorites && allFavorites.length
+                ? allFavorites
+                    .map((fav) => fav.movieId)
+                    .indexOf(tvshowItem.id) > -1
+                : false,
           })),
 
         ...movies
@@ -47,7 +55,12 @@ const Search = () => {
           .map((moviesItem) => ({
             ...moviesItem,
             type: "movie",
-            addedToFavorites: false,
+            addedToFavorite:
+              allFavorites && allFavorites.length
+                ? allFavorites
+                    .map((fav) => fav.movieId)
+                    .indexOf(moviesItem.id) > -1
+                : false,
           })),
       ]);
       setPageLoader(false);
@@ -72,10 +85,13 @@ const Search = () => {
         </h2>
         <div className="grid grid-cols-5 gap-3 items-center scrollbar-hide md:p-2">
           {searchResult && searchResult.length
-            ? searchResult.map((searchItem) => <MediaItem 
+            ? searchResult.map((searchItem) => (
+                <MediaItem
                   searchView={true}
                   media={searchItem}
-                   key={searchItem.id}/>)
+                  key={searchItem.id}
+                />
+              ))
             : null}
         </div>
       </div>

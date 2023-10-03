@@ -7,7 +7,7 @@ import { GlobalContext } from "@/src/context";
 import ManageAcount from "@/src/components/manage-account";
 import CommonLayout from "@/src/components/commonLayout";
 import CircleLoader from "@/src/components/circle-loader";
-import { getTvorMoviesByGenre } from "@/src/utils";
+import { getAllFavorites, getTvorMoviesByGenre } from "@/src/utils";
 
 const Movies = () => {
   const {
@@ -34,6 +34,10 @@ const Movies = () => {
       const drama = await getTvorMoviesByGenre("movie", 18);
       const thriller = await getTvorMoviesByGenre("movie", 53);
       const horror = await getTvorMoviesByGenre("movie", 27);
+      const allFavorites = await getAllFavorites(
+        session?.user?.uid,
+        loggedInAccount?._id
+      );
 
       setMediaData(
         [
@@ -94,7 +98,11 @@ const Movies = () => {
           medias: item.medias.map((mediaItem) => ({
             ...mediaItem,
             type: "movie",
-            addedToFavorite: false,
+            addedToFavorite:
+              allFavorites && allFavorites.length
+                ? allFavorites.map((fav) => fav.movieId).indexOf(mediaItem.id) >
+                  -1
+                : false,
           })),
         }))
       );

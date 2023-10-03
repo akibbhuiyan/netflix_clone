@@ -10,6 +10,7 @@ import {
   getPopularMedia,
   getTopRatedMedia,
   getTrendingMedia,
+  getAllFavorites,
 } from "@/src/utils";
 import CircleLoader from "@/src/components/circle-loader";
 
@@ -32,6 +33,10 @@ const Browse = () => {
       const tendingMovies = await getTrendingMedia("movie");
       const topRatedMovies = await getTopRatedMedia("movie");
       const popularMovies = await getPopularMedia("movie");
+      const allFavorites = await getAllFavorites(
+        session?.user?.uid,
+        loggedInAccount?._id
+      );
 
       setMediaData([
         ...[
@@ -52,6 +57,11 @@ const Browse = () => {
           medias: item.medias.map((mediaItem) => ({
             ...mediaItem,
             type: "tv",
+            addedToFavorite:
+              allFavorites && allFavorites.length
+                ? allFavorites.map((fav) => fav.movieId).indexOf(mediaItem.id) >
+                  -1
+                : false,
           })),
         })),
         ...[
@@ -72,6 +82,11 @@ const Browse = () => {
           medias: item.medias.map((mediaItem) => ({
             ...mediaItem,
             type: "movie",
+            addedToFavorite:
+              allFavorites && allFavorites.length
+                ? allFavorites.map((fav) => fav.movieId).indexOf(mediaItem.id) >
+                  -1
+                : false,
           })),
         })),
       ]);

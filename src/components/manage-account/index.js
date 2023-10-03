@@ -14,8 +14,14 @@ const initialFormData = {
 };
 
 export default function ManageAcount() {
-  const { account, setAccount, pageLoader, setPageLoader, setLoggedInAccount } =
-    useContext(GlobalContext);
+  const {
+    account,
+    setAccount,
+    pageLoader,
+    setPageLoader,
+    setLoggedInAccount,
+    loggedInAccount,
+  } = useContext(GlobalContext);
 
   const [showAccountFrom, setshowAccountFrom] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
@@ -103,7 +109,9 @@ export default function ManageAcount() {
         "loggedInAccount",
         JSON.stringify(showPinContainer.account)
       );
-      router.push(pathName);
+      if (pathName.includes("my-list")) router.push(`/my-list/${session?.user?.uid}/${showPinContainer.account?._id}`);
+     else router.push(pathName);
+     
       setPageLoader(false);
       setPin("");
     } else {
